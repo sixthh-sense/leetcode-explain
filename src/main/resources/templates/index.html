@@ -12,11 +12,21 @@
     </style>
 </head>
 <body>
-    <h1>LeetCode Problem List</h1>
-    <ul class="problem-list">
+    <h1>Welcome to LeetCode Explain! 🚀</h1>
+    <p>리트코드 문제와 풀이를 정리하는 공간입니다. 아래 목록에서 문제를 선택해 보세요.</p>
+    
+    <hr>
+
+    <h2>Problem List</h2>
+    <ul class="problem-list" th:if="${!#lists.isEmpty(problems)}">
         <li th:each="p : ${problems}" class="problem-item">
             <a th:href="@{/problems/{id}(id=${p.id})}" th:text="${p.title}" class="problem-link">Problem Title</a>
+            <span th:if="${p.title == 'Group Anagrams'}" style="color: red; font-weight: bold; font-size: 0.8em; vertical-align: middle;">[NEW]</span>
         </li>
     </ul>
+    
+    <div th:if="${#lists.isEmpty(problems)}">
+        <p>현재 등록된 문제가 없습니다. 데이터베이스 연결 및 초기화 상태를 확인해 주세요.</p>
+    </div>
 </body>
 </html>
