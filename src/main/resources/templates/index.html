@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>LeetCode Explain</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .problem-list { list-style: none; padding: 0; }
+        .problem-item { margin-bottom: 10px; }
+        .problem-link { text-decoration: none; color: #007bff; font-size: 1.2em; }
+        .problem-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>LeetCode Problem List</h1>
+    <ul class="problem-list">
+        <li th:each="p : ${problems}" class="problem-item">
+            <a th:href="@{/problems/{id}(id=${p.id})}" th:text="${p.title}" class="problem-link">Problem Title</a>
+        </li>
+    </ul>
+</body>
+</html>
