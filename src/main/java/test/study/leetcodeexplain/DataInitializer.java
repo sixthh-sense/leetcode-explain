@@ -14,8 +14,27 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        addProblemIfMissing("Two Sum", 
-            "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
+        addProblemIfMissing("Two Sum",
+            "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nYou can return the answer in any order.",
+            """
+            Example 1:
+            Input: nums = [2,7,11,15], target = 9
+            Output: [0,1]
+            Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
+
+            Example 2:
+            Input: nums = [3,2,4], target = 6
+            Output: [1,2]
+
+            Example 3:
+            Input: nums = [3,3], target = 6
+            Output: [0,1]""",
+            """
+            class Solution {
+                public int[] twoSum(int[] nums, int target) {
+
+                }
+            }""",
             """
             public int[] twoSum(int[] nums, int target) {
                 Map<Integer, Integer> map = new HashMap<>();
@@ -30,7 +49,28 @@ public class DataInitializer implements CommandLineRunner {
             }""");
 
         addProblemIfMissing("Palindrome Number",
-            "Given an integer x, return true if x is a palindrome, and false otherwise.",
+            "Given an integer x, return true if x is a palindrome, and false otherwise.\n\nAn integer is a palindrome when it reads the same forward and backward.\n\nFor example, 121 is a palindrome while 123 is not.",
+            """
+            Example 1:
+            Input: x = 121
+            Output: true
+            Explanation: 121 reads as 121 from left to right and from right to left.
+
+            Example 2:
+            Input: x = -121
+            Output: false
+            Explanation: From left to right, it reads -121. From right to left it becomes 121-. Therefore it is not a palindrome.
+
+            Example 3:
+            Input: x = 10
+            Output: false
+            Explanation: Reads 01 from right to left. Therefore it is not a palindrome.""",
+            """
+            class Solution {
+                public boolean isPalindrome(int x) {
+
+                }
+            }""",
             """
             public boolean isPalindrome(int x) {
                 if (x < 0) return false;
@@ -44,7 +84,28 @@ public class DataInitializer implements CommandLineRunner {
             }""");
 
         addProblemIfMissing("Group Anagrams",
-            "Given an array of strings strs, group the anagrams together. You can return the answer in any order.",
+            "Given an array of strings strs, group the anagrams together. You can return the answer in any order.\n\nAn anagram is a word or phrase formed by rearranging the letters of a different word or phrase, using all the original letters exactly once.",
+            """
+            Example 1:
+            Input: strs = ["eat","tea","tan","ate","nat","bat"]
+            Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+            Explanation: There is no string in strs that can be rearranged to form "bat".
+            The strings "nat" and "tan" are anagrams as they can be rearranged to form each other.
+            The strings "ate", "eat", and "tea" are anagrams as they can be rearranged to form each other.
+
+            Example 2:
+            Input: strs = [""]
+            Output: [[""]]
+
+            Example 3:
+            Input: strs = ["a"]
+            Output: [["a"]]""",
+            """
+            class Solution {
+                public List<List<String>> groupAnagrams(String[] strs) {
+
+                }
+            }""",
             """
             class Solution {
                 public List<List<String>> groupAnagrams(String[] strs) {
@@ -69,11 +130,13 @@ public class DataInitializer implements CommandLineRunner {
             }""");
     }
 
-    private void addProblemIfMissing(String title, String description, String solution) {
+    private void addProblemIfMissing(String title, String description, String testCases, String codeSnippet, String solution) {
         if (problemRepository.findAll().stream().noneMatch(p -> p.getTitle().equals(title))) {
             problemRepository.save(Problem.builder()
                     .title(title)
                     .description(description)
+                    .testCases(testCases)
+                    .codeSnippet(codeSnippet)
                     .solution(solution)
                     .build());
         }

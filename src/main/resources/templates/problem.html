@@ -4,31 +4,119 @@
     <meta charset="UTF-8">
     <title th:text="${problem.title}">Problem</title>
     <style>
-        body { font-family: sans-serif; line-height: 1.6; margin: 0 auto; max-width: 800px; padding: 20px; background-color: #f9f9f9; }
-        .container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1 { color: #333; }
-        .description { margin-bottom: 20px; white-space: pre-wrap; background-color: #f1f1f1; padding: 15px; border-radius: 4px; }
-        .btn { display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 20px; }
-        .btn:hover { background-color: #0056b3; }
-        .solution { display: none; margin-top: 20px; padding: 15px; background-color: #eef7ff; border-left: 5px solid #007bff; white-space: pre-wrap; font-family: 'Courier New', Courier, monospace; overflow-x: auto; }
-        .nav-back { margin-top: 30px; display: block; text-decoration: none; color: #007bff; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; background-color: #1a1a2e; color: #e0e0e0; }
+        h1 { color: #fff; margin-bottom: 16px; font-size: 1.5em; }
+        h2 { color: #ccc; font-size: 1.1em; margin-bottom: 10px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 12px;
+            height: calc(100vh - 100px);
+        }
+        .panel {
+            background: #16213e;
+            border: 1px solid #0f3460;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .panel-header {
+            font-size: 0.85em;
+            font-weight: bold;
+            color: #53a8b6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #0f3460;
+        }
+
+        .description { white-space: pre-wrap; font-size: 0.95em; }
+        .test-cases { white-space: pre-wrap; font-family: 'Courier New', Courier, monospace; font-size: 0.9em; }
+        .code-area {
+            width: 100%;
+            height: calc(100% - 40px);
+            background: #0a0a23;
+            color: #43d9ad;
+            border: 1px solid #0f3460;
+            border-radius: 4px;
+            padding: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            resize: none;
+            outline: none;
+        }
+        .solution-content {
+            display: none;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            background: #0a0a23;
+            color: #ffd700;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .btn {
+            padding: 8px 16px;
+            font-size: 0.9em;
+            color: #fff;
+            background-color: #e94560;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn:hover { background-color: #c73e54; }
+        .nav-back {
+            display: inline-block;
+            margin-top: 12px;
+            text-decoration: none;
+            color: #53a8b6;
+            font-size: 0.9em;
+        }
         .nav-back:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-    <div class="container" th:if="${problem != null}">
+    <div th:if="${problem != null}">
         <h1 th:text="${problem.title}">Problem Title</h1>
-        <div class="description" th:text="${problem.description}">Problem description here...</div>
-        
-        <button class="btn" onclick="toggleSolution()">답안 보기</button>
-        
-        <div id="solutionArea" class="solution" th:text="${problem.solution}">Stored solution code...</div>
-        
-        <a href="/" class="nav-back">목록으로 돌아가기</a>
+
+        <div class="grid">
+            <!-- 1. 문제 내용 (좌상) -->
+            <div class="panel">
+                <div class="panel-header">Description</div>
+                <div class="description" th:text="${problem.description}">Problem description here...</div>
+            </div>
+
+            <!-- 2. 테스트 케이스 (우상) -->
+            <div class="panel">
+                <div class="panel-header">Test Cases</div>
+                <div class="test-cases" th:text="${problem.testCases}">Test cases here...</div>
+            </div>
+
+            <!-- 3. 코드 스니펫 (좌하) -->
+            <div class="panel">
+                <div class="panel-header">Code</div>
+                <textarea class="code-area" th:text="${problem.codeSnippet}" spellcheck="false">Write your code here...</textarea>
+            </div>
+
+            <!-- 4. 기존 답안 (우하) -->
+            <div class="panel">
+                <div class="panel-header">Solution</div>
+                <button class="btn" onclick="toggleSolution()">답안 보기</button>
+                <div id="solutionArea" class="solution-content" th:text="${problem.solution}">Stored solution code...</div>
+            </div>
+        </div>
+
+        <a href="/" class="nav-back">← 목록으로 돌아가기</a>
     </div>
-    <div class="container" th:if="${problem == null}">
+
+    <div th:if="${problem == null}" style="text-align:center; margin-top:100px;">
         <h1>문제를 찾을 수 없습니다.</h1>
-        <a href="/" class="nav-back">목록으로 돌아가기</a>
+        <a href="/" class="nav-back">← 목록으로 돌아가기</a>
     </div>
 
     <script>

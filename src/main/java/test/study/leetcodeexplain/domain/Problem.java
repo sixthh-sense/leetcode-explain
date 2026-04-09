@@ -20,5 +20,11 @@ public class Problem {
     private String description;
 
     @Column(columnDefinition = "TEXT")
+    private String testCases;
+
+    @Column(columnDefinition = "TEXT")
+    private String codeSnippet;
+
+    @Column(columnDefinition = "TEXT")
     private String solution;
 }
