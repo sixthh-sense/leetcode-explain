@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import test.study.leetcodeexplain.domain.Problem;
 import test.study.leetcodeexplain.repository.ProblemRepository;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
@@ -46,7 +48,9 @@ public class DataInitializer implements CommandLineRunner {
                     map.put(nums[i], i);
                 }
                 return null;
-            }""");
+            }""",
+            null,
+            null);
 
         addProblemIfMissing("Palindrome Number",
             "Given an integer x, return true if x is a palindrome, and false otherwise.\n\nAn integer is a palindrome when it reads the same forward and backward.\n\nFor example, 121 is a palindrome while 123 is not.",
@@ -81,7 +85,9 @@ public class DataInitializer implements CommandLineRunner {
                     x /= 10;
                 }
                 return original == reversed;
-            }""");
+            }""",
+            null,
+            null);
 
         addProblemIfMissing("Group Anagrams",
             "Given an array of strings strs, group the anagrams together. You can return the answer in any order.\n\nAn anagram is a word or phrase formed by rearranging the letters of a different word or phrase, using all the original letters exactly once.",
@@ -127,18 +133,81 @@ public class DataInitializer implements CommandLineRunner {
 
                     return new ArrayList<>(mapper.values());
                 }
-            }""");
+            }""",
+            null,
+            """
+            [ 시간 복잡도 — O(n * k) ]
+
+            n = 입력 배열 strs의 길이 (문자열 개수)
+            k = 배열 내 문자열의 최대 길이
+
+            1) 외부 for문: strs 배열을 한 번 순회 → O(n)
+            2) 내부 for문: 각 문자열을 char 단위로 순회하며 int[26] 빈도 배열 구성 → O(k)
+            3) Arrays.toString(identity): 고정 크기 26의 배열을 문자열로 변환 → O(26) = O(1)
+            4) HashMap.computeIfAbsent + add: 평균 O(1) (해시 충돌 무시 시)
+
+            → 전체: O(n) × O(k) = O(n * k)
+
+            참고: 정렬 기반 접근법(Arrays.sort)을 key로 쓰면 O(n * k log k)이므로,
+            int[26] 빈도 배열 방식이 더 효율적임.
+
+            ──────────────────────────────────────
+
+            [ 공간 복잡도 — O(n * k) ]
+
+            1) HashMap<String, List<String>> mapper
+               - 최악의 경우 n개의 서로 다른 key가 생성됨 (아나그램 그룹이 전부 다를 때)
+               - key: Arrays.toString 결과 → 각 O(1) (고정 길이 26)
+               - value: 모든 문자열의 참조를 저장 → 총 O(n)개, 문자열 자체 크기 합산 O(n * k)
+
+            2) int[26] identity 배열
+               - 매 반복마다 새로 생성되지만 이전 것은 GC 대상 → O(1)
+
+            3) 반환값 ArrayList<>(mapper.values())
+               - 입력 문자열 전체를 담으므로 → O(n * k)
+
+            → 전체 추가 공간: O(n * k)""");
     }
 
-    private void addProblemIfMissing(String title, String description, String testCases, String codeSnippet, String solution) {
-        if (problemRepository.findAll().stream().noneMatch(p -> p.getTitle().equals(title))) {
+    private void addProblemIfMissing(String title, String description, String testCases,
+                                     String codeSnippet, String solution,
+                                     String memoryRuntime, String complexity) {
+        Optional<Problem> existing = problemRepository.findAll().stream()
+                .filter(p -> p.getTitle().equals(title))
+                .findFirst();
+
+        if (existing.isEmpty()) {
             problemRepository.save(Problem.builder()
                     .title(title)
                     .description(description)
                     .testCases(testCases)
                     .codeSnippet(codeSnippet)
                     .solution(solution)
+                    .memoryRuntime(memoryRuntime)
+                    .complexity(complexity)
                     .build());
+        } else {
+            Problem problem = existing.get();
+            boolean updated = false;
+            if (problem.getComplexity() == null && complexity != null) {
+                problem.setComplexity(complexity);
+                updated = true;
+            }
+            if (problem.getMemoryRuntime() == null && memoryRuntime != null) {
+                problem.setMemoryRuntime(memoryRuntime);
+                updated = true;
+            }
+            if (problem.getTestCases() == null && testCases != null) {
+                problem.setTestCases(testCases);
+                updated = true;
+            }
+            if (problem.getCodeSnippet() == null && codeSnippet != null) {
+                problem.setCodeSnippet(codeSnippet);
+                updated = true;
+            }
+            if (updated) {
+                problemRepository.save(problem);
+            }
         }
     }
 }

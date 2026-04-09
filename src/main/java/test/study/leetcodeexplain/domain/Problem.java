@@ -27,4 +27,10 @@ public class Problem {
 
     @Column(columnDefinition = "TEXT")
     private String solution;
+
+    @Column(columnDefinition = "TEXT")
+    private String memoryRuntime;
+
+    @Column(columnDefinition = "TEXT")
+    private String complexity;
 }
