@@ -3,6 +3,8 @@ package test.study.leetcodeexplain.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter @Setter
 @NoArgsConstructor
@@ -33,4 +35,17 @@ public class Problem {
 
     @Column(columnDefinition = "TEXT")
     private String complexity;
+
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
+
+    @PrePersist
+    protected void onCreate() {
+        createTime = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updateTime = LocalDateTime.now();
+    }
 }

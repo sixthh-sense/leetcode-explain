@@ -167,6 +167,87 @@ public class DataInitializer implements CommandLineRunner {
                - 입력 문자열 전체를 담으므로 → O(n * k)
 
             → 전체 추가 공간: O(n * k)""");
+
+        addProblemIfMissing("Top K Frequent Elements",
+            "Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.",
+            """
+            Example 1:
+            Input: nums = [1,1,1,2,2,3], k = 2
+            Output: [1,2]
+
+            Example 2:
+            Input: nums = [1], k = 1
+            Output: [1]
+
+            Constraints:
+            - 1 <= nums.length <= 10^5
+            - -10^4 <= nums[i] <= 10^4
+            - k is in the range [1, the number of unique elements in the array].
+            - It is guaranteed that the answer is unique.""",
+            """
+            class Solution {
+                public int[] topKFrequent(int[] nums, int k) {
+
+                }
+            }""",
+            """
+            class Solution {
+                public int[] topKFrequent(int[] nums, int k) {
+                    /* HashMap 하나 만든 다음에, num을 key로 두고, count를 1씩 더하고, 최종적으론 value가 k인 key값들의 목록을 만들어서 보낸다? 23:28:24 */
+                    /* value가 k가 아니라 가장 빈번한 k개 - 그런데 *공동* 몇위가 나와버리면 어떡하지? it is guaranteed that the answer is unique 조건이 있어서 망정이지 이게 없었으면 문제가 매우 구려질 뻔 11:46:53 */
+
+                    Map<Integer, Integer> mapper = new HashMap<>();
+
+                    for (int num : nums) {
+                        mapper.put(num, mapper.getOrDefault(num, 0) + 1);
+                    }
+
+                    // 빈도별 버킷
+                    List<Integer>[] bucket = new List[nums.length + 1];
+
+                    for (int key : mapper.keySet()) {
+                        int freq = mapper.get(key);
+                        if (bucket[freq] == null) {
+                            bucket[freq] = new ArrayList<>();
+                        }
+                        bucket[freq].add(key);
+                    }
+
+                    int[] result = new int[k];
+                    int idx = 0;
+
+                    // 뒤에서부터 (빈도 높은 순)
+                    for (int i = bucket.length - 1; i >= 0 && idx < k; i--) {
+                        if (bucket[i] != null) {
+                            for (int num : bucket[i]) {
+                                result[idx++] = num;
+                                if (idx == k) break;
+                            }
+                        }
+                    }
+
+                    return result;
+                }
+            }""",
+            null,
+            """
+            [ 평균 시간 복잡도 — O(n) ]
+            - n = nums 배열의 길이
+            - HashMap에 각 숫자의 빈도를 계산하는 데 O(n) 소요
+            - 빈도별 버킷을 만드는 데 O(n) 소요
+            - 버킷을 뒤에서부터 순회하며 k개의 요소를 찾는 데 최악의 경우 O(n) 소요
+
+            [ Worst Case 시간 복잡도 — O(n) ]
+            - 모든 요소의 빈도가 동일하더라도 버킷 순회는 n만큼 수행되므로 O(n) 유지
+
+            ──────────────────────────────────────
+
+            [ 평균 공간 복잡도 — O(n) ]
+            - HashMap에 최대 n개의 고유 요소 저장: O(n)
+            - 빈도별 버킷(List 배열)에 최대 n개의 요소 분산 저장: O(n)
+
+            [ Worst Case 공간 복잡도 — O(n) ]
+            - 모든 숫자가 고유하여 n개의 버킷에 1개씩 들어가는 경우에도 O(n) 유지""");
     }
 
     private void addProblemIfMissing(String title, String description, String testCases,
