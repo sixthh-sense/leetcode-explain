@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import test.study.leetcodeexplain.domain.Problem;
+import test.study.leetcodeexplain.domain.TestCase;
 import test.study.leetcodeexplain.repository.ProblemRepository;
 
 import java.util.Optional;
 
-@Component
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
@@ -250,7 +250,7 @@ public class DataInitializer implements CommandLineRunner {
             - 모든 숫자가 고유하여 n개의 버킷에 1개씩 들어가는 경우에도 O(n) 유지""");
     }
 
-    private void addProblemIfMissing(String title, String description, String testCases,
+    private void addProblemIfMissing(String title, String description, String testCasesStr,
                                      String codeSnippet, String solution,
                                      String memoryRuntime, String complexity) {
         Optional<Problem> existing = problemRepository.findAll().stream()
@@ -258,15 +258,26 @@ public class DataInitializer implements CommandLineRunner {
                 .findFirst();
 
         if (existing.isEmpty()) {
-            problemRepository.save(Problem.builder()
+            Problem problem = Problem.builder()
                     .title(title)
                     .description(description)
-                    .testCases(testCases)
                     .codeSnippet(codeSnippet)
                     .solution(solution)
                     .memoryRuntime(memoryRuntime)
                     .complexity(complexity)
-                    .build());
+                    .build();
+            
+            if (testCasesStr != null) {
+                TestCase tc = TestCase.builder()
+                        .problem(problem)
+                        .sequence(1)
+                        .input(testCasesStr)
+                        .output("Migrated")
+                        .build();
+                problem.getTestCases().add(tc);
+            }
+            
+            problemRepository.save(problem);
         } else {
             Problem problem = existing.get();
             boolean updated = false;
@@ -276,10 +287,6 @@ public class DataInitializer implements CommandLineRunner {
             }
             if (problem.getMemoryRuntime() == null && memoryRuntime != null) {
                 problem.setMemoryRuntime(memoryRuntime);
-                updated = true;
-            }
-            if (problem.getTestCases() == null && testCases != null) {
-                problem.setTestCases(testCases);
                 updated = true;
             }
             if (problem.getCodeSnippet() == null && codeSnippet != null) {

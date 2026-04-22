@@ -21,8 +21,9 @@ public class Problem {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(columnDefinition = "TEXT")
-    private String testCases;
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private java.util.List<TestCase> testCases = new java.util.ArrayList<>();
 
     @Column(columnDefinition = "TEXT")
     private String codeSnippet;

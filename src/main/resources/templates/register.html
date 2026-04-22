@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Problem - LeetCode Explain</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input[type="text"], textarea { width: 100%; padding: 8px; box-sizing: border-box; }
+        textarea { height: 100px; }
+        .btn { padding: 10px 15px; background-color: #007bff; color: white; border: none; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn:hover { background-color: #0056b3; }
+        .btn-secondary { background-color: #6c757d; }
+    </style>
+</head>
+<body>
+    <h1>Register New Problem 📝</h1>
+    <form th:action="@{/register}" method="post">
+        <div class="form-group">
+            <label for="title">Problem Name (Title)</label>
+            <input type="text" id="title" name="title" required placeholder="e.g., Two Sum">
+        </div>
+        <div class="form-group">
+            <label for="description">Problem Content (Description)</label>
+            <textarea id="description" name="description" required placeholder="Describe the problem..."></textarea>
+        </div>
+        <hr>
+        <h3>Test Cases (Max 3)</h3>
+        
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <h4>Test Case 1</h4>
+            <div class="form-group">
+                <label for="input1">Input</label>
+                <input type="text" id="input1" name="input1" placeholder="e.g., nums = [2,7,11,15], target = 9">
+            </div>
+            <div class="form-group">
+                <label for="output1">Output</label>
+                <input type="text" id="output1" name="output1" placeholder="e.g., [0,1]">
+            </div>
+        </div>
+
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <h4>Test Case 2</h4>
+            <div class="form-group">
+                <label for="input2">Input</label>
+                <input type="text" id="input2" name="input2">
+            </div>
+            <div class="form-group">
+                <label for="output2">Output</label>
+                <input type="text" id="output2" name="output2">
+            </div>
+        </div>
+
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <h4>Test Case 3</h4>
+            <div class="form-group">
+                <label for="input3">Input</label>
+                <input type="text" id="input3" name="input3">
+            </div>
+            <div class="form-group">
+                <label for="output3">Output</label>
+                <input type="text" id="output3" name="output3">
+            </div>
+        </div>
+        
+        <button type="submit" class="btn">Register Problem</button>
+        <a th:href="@{/}" class="btn btn-secondary">Cancel</a>
+    </form>
+</body>
+</html>
